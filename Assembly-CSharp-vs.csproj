@@ -46,16 +46,21 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Block.cs" />
-     <Compile Include="Assets\Scripts\Bomb.cs" />
-     <Compile Include="Assets\Scripts\BombAttack.cs" />
-     <Compile Include="Assets\Scripts\Explosion.cs" />
-     <Compile Include="Assets\Scripts\HealAttack.cs" />
-     <Compile Include="Assets\Scripts\Medkit.cs" />
-     <Compile Include="Assets\Scripts\PlayerController.cs" />
-     <Compile Include="Assets\Scripts\ShieldAttack.cs" />
-     <Compile Include="Assets\Scripts\Sword.cs" />
-     <Compile Include="Assets\Scripts\SwordAttack.cs" />
+     <Compile Include="Assets\Scripts\Enemy\Bandit.cs" />
+     <Compile Include="Assets\Scripts\Enemy\EnemyController.cs" />
+     <Compile Include="Assets\Scripts\MGMT\CameraTracking.cs" />
+     <Compile Include="Assets\Scripts\Player\Block.cs" />
+     <Compile Include="Assets\Scripts\Player\Bomb.cs" />
+     <Compile Include="Assets\Scripts\Player\BombAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\Explosion.cs" />
+     <Compile Include="Assets\Scripts\Player\HealAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\Medkit.cs" />
+     <Compile Include="Assets\Scripts\Player\Mine.cs" />
+     <Compile Include="Assets\Scripts\Player\MineAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\Player\ShieldAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\Sword.cs" />
+     <Compile Include="Assets\Scripts\Player\SwordAttack.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
