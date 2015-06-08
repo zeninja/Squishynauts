@@ -10,7 +10,6 @@ public class Explosion : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter2D(Collider2D other) {
-		Debug.Log(other.gameObject.name);
 		other.SendMessage("HandleDeath", SendMessageOptions.DontRequireReceiver);
 	}
 	
