@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
+	public float moveSpeed = 10;
+
 	GameObject[] players;
 	GameObject target;
 
@@ -13,7 +15,7 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		Move();
 	}
 
 	void FindTarget() {
@@ -29,5 +31,9 @@ public class Enemy : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	void Move() {
+		transform.Translate(transform.right * transform.localScale.x * moveSpeed * Time.deltaTime);
 	}
 }
