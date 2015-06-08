@@ -4,6 +4,8 @@ using System.Collections;
 public class SwordAttack : MonoBehaviour {
 
 	public GameObject attack;
+	public float chargeDelay = 100;
+	public float numFramesActive = 20;
 	
 	void Start() {
 		attack = transform.FindChild("Attack").gameObject;
@@ -14,12 +16,13 @@ public class SwordAttack : MonoBehaviour {
 	}
 
 	IEnumerator Attack() {
-		int numFramesActive = 7;
+		AudioManager.GetInstance().PlaySound(AudioManager.GetInstance().arthurGrunt);
+		yield return new WaitForSeconds(chargeDelay/60);
+
 		attack.SetActive(true);
-		for(int i = 0; i < numFramesActive; i++) {
-			yield return new WaitForSeconds(1/60);
-		}
-		
+		GetComponent<PlayerController>().canMove = true;
+		yield return new WaitForSeconds(numFramesActive/60);
 		attack.SetActive(false);
+		GetComponent<PlayerController>().canMove = false;
 	}
 }
