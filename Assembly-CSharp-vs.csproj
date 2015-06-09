@@ -46,18 +46,47 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\AudioManager.cs" />
-     <Compile Include="Assets\Scripts\Block.cs" />
-     <Compile Include="Assets\Scripts\Bomb.cs" />
-     <Compile Include="Assets\Scripts\BombAttack.cs" />
-     <Compile Include="Assets\Scripts\Enemy.cs" />
-     <Compile Include="Assets\Scripts\Explosion.cs" />
-     <Compile Include="Assets\Scripts\HealAttack.cs" />
-     <Compile Include="Assets\Scripts\Medkit.cs" />
-     <Compile Include="Assets\Scripts\PlayerController.cs" />
-     <Compile Include="Assets\Scripts\ShieldAttack.cs" />
-     <Compile Include="Assets\Scripts\Sword.cs" />
-     <Compile Include="Assets\Scripts\SwordAttack.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\AI.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\GridPlayer.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\GridPlayer2D.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\Lines.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\SearchPlayerAI.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\SetGrid.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\SimpleAI.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\SimpleAI2D.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\TDEnemy.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\TDManager.cs" />
+     <Compile Include="Assets\Pathfinding\Scenes\Scripts\WaypointPlayer.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\DynamicMapUpdate.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\DynamicTDGridObject.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\Node.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\NodeSearch.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\Pathfinder.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\Pathfinder2D.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\Pathfinding.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\Pathfinding2D.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\QueuePath.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\WaypointListNode.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\WaypointNode.cs" />
+     <Compile Include="Assets\Pathfinding\Scripts\WaypointPathfinder.cs" />
+     <Compile Include="Assets\Scripts\Enemy\Bandit.cs" />
+     <Compile Include="Assets\Scripts\Enemy\EnemyController.cs" />
+     <Compile Include="Assets\Scripts\MGMT\AudioManager.cs" />
+     <Compile Include="Assets\Scripts\MGMT\CameraTracking.cs" />
+     <Compile Include="Assets\Scripts\Player\Block.cs" />
+     <Compile Include="Assets\Scripts\Player\Bomb.cs" />
+     <Compile Include="Assets\Scripts\Player\BombAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\Explosion.cs" />
+     <Compile Include="Assets\Scripts\Player\HealAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\Medkit.cs" />
+     <Compile Include="Assets\Scripts\Player\Mine.cs" />
+     <Compile Include="Assets\Scripts\Player\MineAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\Player\ShieldAttack.cs" />
+     <Compile Include="Assets\Scripts\Player\Sword.cs" />
+     <Compile Include="Assets\Scripts\Player\SwordAttack.cs" />
+     <Compile Include="Assets\Scripts\Util\RotationHelper.cs" />
+     <Compile Include="Assets\Scripts\Weapons\Projectile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

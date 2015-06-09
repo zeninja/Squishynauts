@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void ManageInput() {
+		if(!alive) { return; }
+
 		inputHorizontal = Input.GetAxisRaw("P" + playerNum + "_Horizontal");
 		inputVertical = Input.GetAxisRaw("P" + playerNum + "_Vertical");
 		inputFire = Input.GetButtonDown("P" + playerNum + "_Fire");
@@ -85,6 +87,13 @@ public class PlayerController : MonoBehaviour {
 		hp += hpToRestore;
 	}
 
+	void HandleShot(int damage) {
+		hp = Mathf.Max(0, hp - damage);
+		if(hp == 0) {
+			HandleDeath();
+		}
+	}
+
 	void HandleMedicBeam() {
 		Debug.Log(gameObject.name + " being healed");
 		hp += healRate;
@@ -93,7 +102,10 @@ public class PlayerController : MonoBehaviour {
 	
 	void HandleDeath() {
 		if(!invincible) {
-			Destroy(gameObject);
+			alive = false;
+			transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * -1, transform.localScale.z);
+			collider2D.enabled = false;
+			//Destroy(gameObject);
 		}
 	}
 }

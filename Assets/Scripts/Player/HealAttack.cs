@@ -3,6 +3,8 @@ using System.Collections;
 
 public class HealAttack : MonoBehaviour {
 
+	GameObject medigun;
+
 	public int numHealthKitsToDrop = 4;
 
 	public GameObject healthKitPrefab;
@@ -10,7 +12,10 @@ public class HealAttack : MonoBehaviour {
 	public float beamDistance = 3;
 	int layer;
 
+	public bool useRightStickToAim;
+
 	void Start() {
+		medigun = transform.FindChild("Medigun").gameObject;
 		layer = 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Obstacle");
 	}
 
@@ -47,23 +52,32 @@ public class HealAttack : MonoBehaviour {
 		if(GetComponent<PlayerController>().inputFireHold) {
 			//GetComponent<PlayerController>().canMove = false;
 
-			Vector3 aimDirection = GetComponent<PlayerController>().moveDirection;
+			Vector3 aimDirection;
+
+			if(!useRightStickToAim) {
+				aimDirection = GetComponent<PlayerController>().moveDirection;
+			} else {
+				aimDirection = Input.GetAxisRaw("P_" + GetComponent<PlayerController>().playerNum + "_RightStick");
+			}
+
 			if (aimDirection == Vector3.zero) {
 				aimDirection = new Vector3(transform.localScale.x, 0, 0);
 			}
 
 			RaycastHit2D hit = Physics2D.Raycast(transform.position, aimDirection, beamDistance, layer);
 
-			transform.FindChild("Medigun").gameObject.SetActive(true);
-			//transform.FindChild("Medigun").transform.rotation.SetFromToRotation(transform.position, transform.position + GetComponent<PlayerController>().moveDirection); //(transform.position + GetComponent<PlayerController>().moveDirection * 10);
-			//transform.FindChild("Medigun").transform.LookAt(transform.position + GetComponent<PlayerController>().moveDirection);
+			medigun.gameObject.SetActive(true);
+			//medigun.transform.rotation.SetFromToRotation(transform.position, transform.position + GetComponent<PlayerController>().moveDirection); //(transform.position + GetComponent<PlayerController>().moveDirection * 10);
+			//medigun.transform.LookAt(transform.position + GetComponent<PlayerController>().moveDirection);
 
 
-			float x = GetComponent<PlayerController>().moveDirection.x;
-			float y = GetComponent<PlayerController>().moveDirection.y;
+//			float x = GetComponent<PlayerController>().moveDirection.x;
+//			float y = GetComponent<PlayerController>().moveDirection.y;
+//
+//			float angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
+//			medigun.transform.rotation = Quaternion.Euler(0f, 0f, angle * transform.localScale.x);
 
-			float angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
-			transform.FindChild("Medigun").transform.rotation = Quaternion.Euler(0f, 0f, angle * transform.localScale.x);
+			medigun.transform.rotation = RotationHelper.RotateTowardsTarget2D(GetComponent<PlayerController>().moveDirection, transform.localScale.x);
 
 			float beamLength = beamDistance;
 
@@ -79,14 +93,14 @@ public class HealAttack : MonoBehaviour {
 			int scrollSpeed = 1;
 			
 			float offset = Time.time * scrollSpeed * -1;
-			transform.FindChild("Medigun").renderer.material.SetTextureOffset("_MainTex", new Vector2(offset * transform.localScale.x, 0));
-			transform.FindChild("Medigun").renderer.material.mainTextureScale = new Vector2(beamLength, 1);
-			transform.FindChild("Medigun").localScale = new Vector3(beamLength, .5f, 1);
-			transform.FindChild("Medigun").transform.position = transform.position + aimDirection.normalized * beamLength/2;
+			medigun.renderer.material.SetTextureOffset("_MainTex", new Vector2(offset * transform.localScale.x, 0));
+			medigun.renderer.material.mainTextureScale = new Vector2(beamLength, 1);
+			medigun.transform.localScale = new Vector3(beamLength * transform.localScale.x, .5f, 1);
+			medigun.transform.position = transform.position + aimDirection.normalized * beamLength/2;
 
 		} else {
 			GetComponent<PlayerController>().canMove = true;
-			transform.FindChild("Medigun").gameObject.SetActive(false);
+			medigun.gameObject.SetActive(false);
 
 		}
 	}
