@@ -1,6 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
+Project("{F110A4AB-F9B6-B54C-6A77-B5B2F69CCE86}") = "Squishynauts", "Assembly-CSharp-firstpass-vs.csproj", "{5EB36E02-D535-4D4E-8DDB-A21B2057EF5B}"
+EndProject
 Project("{F110A4AB-F9B6-B54C-6A77-B5B2F69CCE86}") = "Squishynauts", "Assembly-CSharp-vs.csproj", "{FEEB15D4-FDF3-ADA9-F87E-2D5D81F5BD33}"
 EndProject
 Project("{F110A4AB-F9B6-B54C-6A77-B5B2F69CCE86}") = "Squishynauts", "Assembly-CSharp-Editor-vs.csproj", "{6B6DFD7B-6057-77E8-1E3E-ED527DC9317E}"
@@ -11,6 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5EB36E02-D535-4D4E-8DDB-A21B2057EF5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EB36E02-D535-4D4E-8DDB-A21B2057EF5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EB36E02-D535-4D4E-8DDB-A21B2057EF5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EB36E02-D535-4D4E-8DDB-A21B2057EF5B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FEEB15D4-FDF3-ADA9-F87E-2D5D81F5BD33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FEEB15D4-FDF3-ADA9-F87E-2D5D81F5BD33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEEB15D4-FDF3-ADA9-F87E-2D5D81F5BD33}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -23,7 +29,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																							GlobalSection(MonoDevelopProperties) = preSolution
+																																																																										GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1

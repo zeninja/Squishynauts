@@ -1,11 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Enemy/EnemyController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MGMT/GameManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/Enemy/EnemyController.cs" Line="66" Column="66" />
-      <File FileName="Assets/Scripts/Weapons/Projectile.cs" Line="23" Column="23" />
-      <File FileName="Assets/Scripts/Player/PlayerController.cs" Line="108" Column="1" />
-      <File FileName="Assets/Scripts/Player/ShieldAttack.cs" Line="25" Column="60" />
+      <File FileName="Assets/Scripts/MGMT/GameManager.cs" Line="20" Column="1" />
+      <File FileName="Assets/Scripts/Player/HealAttack.cs" Line="15" Column="33" />
+      <File FileName="Assets/Scripts/Enemy/EnemyController.cs" Line="39" Column="25" />
+      <File FileName="Assets/Scripts/Weapons/Projectile.cs" Line="23" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

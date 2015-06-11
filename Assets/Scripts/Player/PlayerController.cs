@@ -87,9 +87,9 @@ public class PlayerController : MonoBehaviour {
 		hp += hpToRestore;
 	}
 
-	void HandleShot(int damage) {
-		hp = Mathf.Max(0, hp - damage);
-		if(hp == 0) {
+	void HandleDamage(int dmg) {
+		hp = Mathf.Max (0, hp - dmg);
+		if (hp == 0) {
 			HandleDeath();
 		}
 	}
@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour {
 		if(!invincible) {
 			alive = false;
 			transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * -1, transform.localScale.z);
-			collider2D.enabled = false;
+			GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 		}
 	}

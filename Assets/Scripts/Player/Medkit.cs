@@ -13,7 +13,7 @@ public class Medkit : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		spreadForce += Random.Range(-40, 40);
-		rigidbody2D.AddForce(moveDirection * spreadForce);
+		GetComponent<Rigidbody2D>().AddForce(moveDirection * spreadForce);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {

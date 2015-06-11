@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Projectile : MonoBehaviour {
 
+	public GameObject owner;
 	public float moveSpeed = 10;
 	public float damage = 3;
 
@@ -17,12 +18,9 @@ public class Projectile : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if(other.CompareTag("Reflective")) {
-			Vector3.Reflect(Vector3.right, other.transform.root.GetComponent<PlayerController>().moveDirection);
-		} else {
-			other.SendMessage("HandleShot", damage, SendMessageOptions.DontRequireReceiver);
-
-			Destroy(gameObject);
+		if (other.transform.root.gameObject != owner) {
+			other.SendMessage ("HandleDamage", damage, SendMessageOptions.DontRequireReceiver);
+			Destroy (gameObject);
 		}
 	}
 }

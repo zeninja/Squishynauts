@@ -52,12 +52,12 @@ public class HealAttack : MonoBehaviour {
 		if(GetComponent<PlayerController>().inputFireHold) {
 			//GetComponent<PlayerController>().canMove = false;
 
-			Vector3 aimDirection;
+			Vector3 aimDirection = Vector3.zero;
 
 			if(!useRightStickToAim) {
 				aimDirection = GetComponent<PlayerController>().moveDirection;
 			} else {
-				aimDirection = Input.GetAxisRaw("P_" + GetComponent<PlayerController>().playerNum + "_RightStick");
+				//aimDirection = Input.GetAxisRaw("P_" + GetComponent<PlayerController>().playerNum + "_RightStick");
 			}
 
 			if (aimDirection == Vector3.zero) {
@@ -82,7 +82,7 @@ public class HealAttack : MonoBehaviour {
 			float beamLength = beamDistance;
 
 			if (hit) {
-				if(hit.collider != null && hit.collider != collider) {
+				if(hit.collider != null && hit.collider != GetComponent<Collider>()) {
 					Debug.Log(hit.collider.name);
 
 					hit.collider.SendMessage("HandleMedicBeam", SendMessageOptions.DontRequireReceiver);
@@ -93,8 +93,8 @@ public class HealAttack : MonoBehaviour {
 			int scrollSpeed = 1;
 			
 			float offset = Time.time * scrollSpeed * -1;
-			medigun.renderer.material.SetTextureOffset("_MainTex", new Vector2(offset * transform.localScale.x, 0));
-			medigun.renderer.material.mainTextureScale = new Vector2(beamLength, 1);
+			medigun.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(offset * transform.localScale.x, 0));
+			medigun.GetComponent<Renderer>().material.mainTextureScale = new Vector2(beamLength, 1);
 			medigun.transform.localScale = new Vector3(beamLength * transform.localScale.x, .5f, 1);
 			medigun.transform.position = transform.position + aimDirection.normalized * beamLength/2;
 
