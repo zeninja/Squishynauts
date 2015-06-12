@@ -677,7 +677,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Path: []
-  PathType: 0
   JS: 0
   stateIndex: 0
   usePathfinding: 1
@@ -1077,7 +1076,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Path: []
-  PathType: 0
   JS: 0
   stateIndex: 0
   usePathfinding: 0
@@ -1611,7 +1609,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b537aa9b3b98713488f1b0b7f7ecdf06, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: .838999987
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b537aa9b3b98713488f1b0b7f7ecdf06, type: 2}
       propertyPath: m_LocalPosition.z
