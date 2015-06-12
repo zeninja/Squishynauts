@@ -39,9 +39,6 @@ public class EnemyController : MonoBehaviour {
 		public float seekRange = 10f;
 		[System.NonSerialized]
 		public Vector3 moveDirection;
-		public enum ChaseType { towardsPlayer, awayFromPlayer }
-		public ChaseType chaseType = ChaseType.towardsPlayer;
-		public bool chaseUnseenPlayers = false;
 	}
 
 	public Attack attack;
@@ -80,9 +77,6 @@ public class EnemyController : MonoBehaviour {
 		if (GameManager.drawGizmos) {
 			UnityEditor.Handles.color = Color.red;
 			UnityEditor.Handles.DrawWireDisc (transform.position, Vector3.forward, stats.attackRange);
-
-//			UnityEditor.Handles.color = Color.green;
-//			UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, movement.seekRange);
 		}
 	}
 
@@ -93,26 +87,30 @@ public class EnemyController : MonoBehaviour {
 	}
 
 	IEnumerator Routine() {
-		switch (state) {
-			case EnemyState.moving:
-				yield return new WaitForSeconds(Random.Range(stats.timeToSpendChasing.x, stats.timeToSpendChasing.y));
-				SwitchState(EnemyState.attacking);
-				break;
+		if (alive) {
+			switch (state) {
+				case EnemyState.moving:
+					yield return new WaitForSeconds (Random.Range (stats.timeToSpendChasing.x, stats.timeToSpendChasing.y));
+					SwitchState (EnemyState.attacking);
+					break;
 
-			case EnemyState.attacking:
-				HandleAttack();
-				yield return new WaitForSeconds(Random.Range(stats.timeToSpendAttacking.x, stats.timeToSpendAttacking.y));
-				SwitchState(EnemyState.still);
-				break;
+				case EnemyState.attacking:
+					HandleAttack ();
+					yield return new WaitForSeconds (Random.Range (stats.timeToSpendAttacking.x, stats.timeToSpendAttacking.y));
+					SwitchState (EnemyState.still);
+					break;
 
-			case EnemyState.still:
-				yield return new WaitForSeconds(Random.Range(stats.timeToSpendPaused.x, stats.timeToSpendPaused.y));
-				SwitchState(EnemyState.moving);
-				break;
+				case EnemyState.still:
+					yield return new WaitForSeconds (Random.Range (stats.timeToSpendPaused.x, stats.timeToSpendPaused.y));
+					SwitchState (EnemyState.moving);
+					break;
+			}
 		}
 	}
 
 	void Update() {
+		if(!alive) { return; }
+
 		FindClosestTarget();
 		
 		switch (state) {
@@ -125,7 +123,7 @@ public class EnemyController : MonoBehaviour {
 	
 	#region Movement
 	void HandleMovement() {
-		if (movement.canMove && state == EnemyState.moving) {
+		if (movement.canMove && state == EnemyState.moving && stats.playerInRange) {
 			FindMoveDirection();
 			Move();
 		}
@@ -159,9 +157,7 @@ public class EnemyController : MonoBehaviour {
 	}
 
 	void FindMoveDirection() {
-		if (stats.playerInRange) {
-			movement.moveDirection = (target.transform.position - transform.position).normalized;
-		}
+		movement.moveDirection = (target.transform.position - transform.position).normalized;
 	}
 
 	void Move() {
@@ -216,6 +212,13 @@ public class EnemyController : MonoBehaviour {
 		}
 	}
 	#endregion
+
+	void HandleDamage(int dmg) {
+		stats.HP = Mathf.Max (0, stats.HP - dmg);
+		if (stats.HP == 0) {
+			HandleDeath();
+		}
+	}
 
 	void HandleDeath() {
 		StopAllCoroutines ();

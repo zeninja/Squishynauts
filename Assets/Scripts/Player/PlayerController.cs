@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
 	public int playerNum;
 
 	public float moveSpeed;
+	float defaultMoveSpeed;
 	
 	float inputHorizontal;
 	float inputVertical;
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		maxHealth = hp;
+		defaultMoveSpeed = moveSpeed;
 	}
 	
 	// Update is called once per frame
@@ -87,6 +89,18 @@ public class PlayerController : MonoBehaviour {
 		hp += hpToRestore;
 	}
 
+	public void RestoreMoveSpeed() {
+		moveSpeed = defaultMoveSpeed;
+	}
+
+	public void ReduceMoveSpeed() {
+		iTween.ValueTo(gameObject, iTween.Hash("from", defaultMoveSpeed, "to", 0, "time", GetComponent<SwordAttack>().chargeDelay/60, "onupdate", "UpdateMoveSpeed"));
+	}
+
+	void UpdateMoveSpeed(float newSpeed) {
+		moveSpeed = newSpeed;
+	}
+
 	void HandleDamage(int dmg) {
 		hp = Mathf.Max (0, hp - dmg);
 		if (hp == 0) {
@@ -105,7 +119,7 @@ public class PlayerController : MonoBehaviour {
 			alive = false;
 			transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * -1, transform.localScale.z);
 			GetComponent<Collider2D>().enabled = false;
-			//Destroy(gameObject);
+			GameObject.Find("GameManager").GetComponent<GameManager>().CheckGameOver();
 		}
 	}
 }

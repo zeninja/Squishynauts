@@ -177,6 +177,7 @@
      <Compile Include="Assets\Scripts\Util\RotationHelper.cs" />
      <Compile Include="Assets\Scripts\Weapons\Projectile.cs" />
      <None Include="Assets\InControl\README\README.txt" />
+     <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>/Users/adnanagha/Squishynauts/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>

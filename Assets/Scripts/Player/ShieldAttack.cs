@@ -14,13 +14,17 @@ public class ShieldAttack : MonoBehaviour {
 	}
 
 	void HandleAttack(Vector3 direction) {
-		transform.FindChild("Shield").rotation = RotationHelper.RotateTowardsTarget2D(player.moveDirection);//Quaternion.LookRotation(player.moveDirection); //Quaternion.SetFromToRotation(transform.forward, player.moveDirection);
+		transform.FindChild("Shield").rotation = RotationHelper.RotateTowardsTarget2D(player.moveDirection, transform.localScale.x);//Quaternion.LookRotation(player.moveDirection); //Quaternion.SetFromToRotation(transform.forward, player.moveDirection);
 		
 		StartCoroutine("Shield", direction);
 	}
 	
 	IEnumerator Shield() {
 		shield.SetActive(true);
+		for (int i = 0; i < shield.transform.childCount; i++) {
+			shield.transform.GetChild(i).rotation = Quaternion.Euler(Vector3.zero);
+		}
+
 		GetComponent<PlayerController>().canMove = false;
 		yield return new WaitForSeconds((float)numFramesActive/60);
 		shield.SetActive(false);

@@ -19,8 +19,15 @@ public class Projectile : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.transform.root.gameObject != owner) {
-			other.SendMessage ("HandleDamage", damage, SendMessageOptions.DontRequireReceiver);
-			Destroy (gameObject);
+			Debug.Log(other.gameObject.name);
+
+			if (other.CompareTag("Reflective")) {
+				Debug.Log("Hit something reflective");
+				Vector3.Reflect(transform.rotation.eulerAngles, other.transform.forward);
+			} else {
+				other.SendMessage ("HandleDamage", damage, SendMessageOptions.DontRequireReceiver);
+				Destroy (gameObject);
+			}
 		}
 	}
 }
