@@ -2,16 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class EnemyController : MonoBehaviour {
+public class EnemyController : Pathfinding2D {
 
 	public enum EnemyState { still, attacking, moving }
 	[System.NonSerialized]
 	public EnemyState state  = EnemyState.moving;
 	public int stateIndex = 0;
-
-	public EnemyState[] routine;
-
+	
 	bool alive = true;
+
+	public bool usePathfinding;
 
 	public Stats stats;
 	[System.Serializable]
@@ -66,10 +66,15 @@ public class EnemyController : MonoBehaviour {
 
 	public float spread = 0;
 
+	void Awake() {
+	}
+
 	// Use this for initialization
 	void Start () {
 		stats.maxHP = stats.HP;
 		players = GameObject.FindGameObjectsWithTag("Player");
+
+		FindClosestTarget ();
 		StartCoroutine("Routine");
 	}
 
@@ -77,12 +82,16 @@ public class EnemyController : MonoBehaviour {
 		if (GameManager.drawGizmos) {
 			UnityEditor.Handles.color = Color.red;
 			UnityEditor.Handles.DrawWireDisc (transform.position, Vector3.forward, stats.attackRange);
+
+			UnityEditor.Handles.color = Color.blue;
+			UnityEditor.Handles.DrawWireDisc (Path[0], Vector3.forward, 1);
 		}
 	}
 
 	#region EnemyState
 	void SwitchState(EnemyState newState) {
 		state = newState;
+
 		StartCoroutine("Routine");
 	}
 
@@ -111,6 +120,8 @@ public class EnemyController : MonoBehaviour {
 	void Update() {
 		if(!alive) { return; }
 
+		Debug.Log (Path.Count);
+
 		FindClosestTarget();
 		
 		switch (state) {
@@ -124,12 +135,21 @@ public class EnemyController : MonoBehaviour {
 	#region Movement
 	void HandleMovement() {
 		if (movement.canMove && state == EnemyState.moving && stats.playerInRange) {
-			FindMoveDirection();
-			Move();
+			if(!usePathfinding) {
+				FindMoveDirection();
+				//Move();
+			} else {
+				for(int i = 0; i < Path.Count - 2; i++) {
+					Debug.DrawLine(Path[i], Path[i+1], Color.red);
+				}
+
+				Move();
+			}
 		}
 	}
 
 	void FindClosestTarget() {
+
 		float shortestDistanceToTarget = Mathf.Infinity;
 		
 		for(int i = 0; i < players.Length; i++) {
@@ -154,6 +174,12 @@ public class EnemyController : MonoBehaviour {
 		}
 
 		stats.playerInRange = target != null;
+
+		if (target != null && usePathfinding) {
+			if (Path.Count == 0) {
+				FindPath(transform.position, target.transform.position);
+			}
+		}
 	}
 
 	void FindMoveDirection() {
@@ -161,8 +187,24 @@ public class EnemyController : MonoBehaviour {
 	}
 
 	void Move() {
-		transform.Translate (movement.moveDirection * movement.moveSpeed * Time.deltaTime);
-		transform.localScale = new Vector3 (Mathf.Abs(transform.localScale.x) * Mathf.Sign (movement.moveDirection.x), transform.localScale.y, transform.localScale.z);
+		if (!usePathfinding) {
+			transform.Translate (movement.moveDirection * movement.moveSpeed * Time.deltaTime);
+			transform.localScale = new Vector3 (Mathf.Abs (transform.localScale.x) * Mathf.Sign (movement.moveDirection.x), transform.localScale.y, transform.localScale.z);
+		} else {
+			if (Path.Count > 0)
+			{
+				Debug.Log("Path count > 0");
+				Debug.Log(Path[0]);
+				transform.position = Vector3.MoveTowards(transform.position, Path[0], Time.deltaTime * movement.moveSpeed);
+
+//				transform.Translate((transform.position - Path[0]).normalized * movement.moveSpeed * Time.deltaTime);
+				if (Vector3.Distance(transform.position, Path[0]) < 0.4F)
+				{
+					Debug.Log("Removing path at 0");
+					Path.RemoveAt(0);
+				}
+			}
+		}
 	}
 	#endregion
 

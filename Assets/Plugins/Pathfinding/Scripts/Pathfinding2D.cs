@@ -21,17 +21,17 @@ public class Pathfinding2D : MonoBehaviour
     }
 
     //A test move function, can easily be replaced
-    public void Move()
-    {
-        if (Path.Count > 0)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, Path[0], Time.deltaTime * 30F);
-            if (Vector3.Distance(transform.position, Path[0]) < 0.4F)
-            {
-                Path.RemoveAt(0);
-            }
-        }
-    }
+//    public void Move()
+//    {
+//        if (Path.Count > 0)
+//        {
+//            transform.position = Vector3.MoveTowards(transform.position, Path[0], Time.deltaTime * 30F);
+//            if (Vector3.Distance(transform.position, Path[0]) < 0.4F)
+//            {
+//                Path.RemoveAt(0);
+//            }
+//        }
+//    }
 
     protected virtual void SetList(List<Vector3> path)
     {
