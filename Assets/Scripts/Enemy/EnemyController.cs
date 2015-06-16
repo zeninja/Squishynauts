@@ -170,28 +170,29 @@ public class EnemyController : Pathfinding2D {
 			}
 		}
 
-		// Ignore the enemy layer so that we can raycast from inside the enemy collider. 
-		// Also means enemy can see through other enemies
-		int layer = ~(1 << LayerMask.NameToLayer ("Enemy"));
-		RaycastHit2D visibleCheck = Physics2D.Raycast (transform.position, target.transform.position - transform.position, Mathf.Infinity, layer);
-
-		if (visibleCheck) {
-			targetIsVisible = visibleCheck.collider.transform.root.gameObject == target;
-		}
-
-		if ((target.transform.position - transform.position).magnitude < stats.attackRange) {
-			// Only seek players that are within the vision range of the enemy
-			attack.aimDirection = RotationHelper.RotateTowardsTarget2D (target.transform.position - transform.position);
-			transform.FindChild ("BeamGun").transform.rotation = attack.aimDirection;
-		} else {
-			// If the closest enemy is not in range, there is no target
-			target = null;
+		if (target != null) {
+			if ((target.transform.position - transform.position).magnitude < stats.attackRange) {
+				// Only seek players that are within the vision range of the enemy
+				attack.aimDirection = RotationHelper.RotateTowardsTarget2D (target.transform.position - transform.position);
+				transform.FindChild ("BeamGun").transform.rotation = attack.aimDirection;
+			} else {
+				target = null;
+			}
 		}
 
 		stats.playerInRange = target != null;
+	
+		if (target != null) {
+			// Ignore the enemy layer so that we can raycast from inside the enemy collider. 
+			// Also means enemy can see through other enemies
+			int layer = ~(1 << LayerMask.NameToLayer ("Enemy"));
+			RaycastHit2D visibleCheck = Physics2D.Raycast (transform.position, target.transform.position - transform.position, Mathf.Infinity, layer);
+			
+			if (visibleCheck) {
+				targetIsVisible = visibleCheck.collider.transform.root.gameObject == target;
+			}
 
-		if (target != null && usePathfinding) {
-			if (Path.Count == 0) {
+			if (usePathfinding && Path.Count == 0) {
 				FindPath(transform.position, target.transform.position);
 			}
 		}

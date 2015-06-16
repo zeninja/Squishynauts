@@ -3,18 +3,20 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+	public int playerNum;
+	
 	public int hp = 10;
 	int maxHealth = 10;
 	int healRate = 1;
 
-	public int playerNum;
-
 	public float moveSpeed;
-	float defaultMoveSpeed;
+	[System.NonSerialized]
+	public float defaultMoveSpeed;
 	
 	float inputHorizontal;
 	float inputVertical;
-	bool inputFire;
+	[System.NonSerialized]
+	public bool inputFire;
 	[System.NonSerialized]
 	public bool inputFireHold;
 
@@ -81,7 +83,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	
 		if (inputFire) {
-			SendMessage("HandleAttack", moveDirection);
+			SendMessage("HandleAttack", moveDirection, SendMessageOptions.DontRequireReceiver);
 		}
 	}
 	

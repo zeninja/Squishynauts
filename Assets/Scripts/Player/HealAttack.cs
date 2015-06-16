@@ -48,6 +48,7 @@ public class HealAttack : MonoBehaviour {
 
 	}
 
+
 	void Update() {
 		if(GetComponent<PlayerController>().inputFireHold) {
 			//GetComponent<PlayerController>().canMove = false;
@@ -101,7 +102,6 @@ public class HealAttack : MonoBehaviour {
 		} else {
 			GetComponent<PlayerController>().canMove = true;
 			medigun.gameObject.SetActive(false);
-
 		}
 	}
 }
