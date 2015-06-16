@@ -13,6 +13,10 @@ public class EnemyController : Pathfinding2D {
 
 	public bool usePathfinding;
 
+	public bool playerInAttackRange;
+	public bool playerInSeekRange;
+	public bool targetIsVisible;
+
 	public Stats stats;
 	[System.Serializable]
 	public class Stats 
@@ -75,7 +79,7 @@ public class EnemyController : Pathfinding2D {
 		players = GameObject.FindGameObjectsWithTag("Player");
 
 		FindClosestTarget ();
-		StartCoroutine("Routine");
+//		StartCoroutine("Routine");
 	}
 
 	void OnDrawGizmos () {
@@ -83,8 +87,10 @@ public class EnemyController : Pathfinding2D {
 			UnityEditor.Handles.color = Color.red;
 			UnityEditor.Handles.DrawWireDisc (transform.position, Vector3.forward, stats.attackRange);
 
-			UnityEditor.Handles.color = Color.blue;
-			UnityEditor.Handles.DrawWireDisc (Path[0], Vector3.forward, 1);
+			if(Path.Count > 0) {
+				UnityEditor.Handles.color = Color.blue;
+				UnityEditor.Handles.DrawWireDisc (Path[0], Vector3.forward, 1);
+			}
 		}
 	}
 
@@ -95,40 +101,38 @@ public class EnemyController : Pathfinding2D {
 		StartCoroutine("Routine");
 	}
 
-	IEnumerator Routine() {
-		if (alive) {
-			switch (state) {
-				case EnemyState.moving:
-					yield return new WaitForSeconds (Random.Range (stats.timeToSpendChasing.x, stats.timeToSpendChasing.y));
-					SwitchState (EnemyState.attacking);
-					break;
-
-				case EnemyState.attacking:
-					HandleAttack ();
-					yield return new WaitForSeconds (Random.Range (stats.timeToSpendAttacking.x, stats.timeToSpendAttacking.y));
-					SwitchState (EnemyState.still);
-					break;
-
-				case EnemyState.still:
-					yield return new WaitForSeconds (Random.Range (stats.timeToSpendPaused.x, stats.timeToSpendPaused.y));
-					SwitchState (EnemyState.moving);
-					break;
-			}
-		}
-	}
+//	IEnumerator Routine() {
+//		if (alive) {
+//			switch (state) {
+//				case EnemyState.moving:
+//					yield return new WaitForSeconds (Random.Range (stats.timeToSpendChasing.x, stats.timeToSpendChasing.y));
+//					SwitchState (EnemyState.attacking);
+//					break;
+//
+//				case EnemyState.attacking:
+//					HandleAttack ();
+//					yield return new WaitForSeconds (Random.Range (stats.timeToSpendAttacking.x, stats.timeToSpendAttacking.y));
+//					SwitchState (EnemyState.still);
+//					break;
+//
+//				case EnemyState.still:
+//					yield return new WaitForSeconds (Random.Range (stats.timeToSpendPaused.x, stats.timeToSpendPaused.y));
+//					SwitchState (EnemyState.moving);
+//					break;
+//			}
+//		}
+//	}
 
 	void Update() {
 		if(!alive) { return; }
 
-		Debug.Log (Path.Count);
-
 		FindClosestTarget();
-		
-		switch (state) {
-			case EnemyState.moving:
-				HandleMovement ();
-				break;
-		}
+		HandleMovement ();
+//		switch (state) {
+//			case EnemyState.moving:
+//				HandleMovement ();
+//				break;
+//		}
 	}
 	#endregion
 	
@@ -140,7 +144,9 @@ public class EnemyController : Pathfinding2D {
 				//Move();
 			} else {
 				for(int i = 0; i < Path.Count - 2; i++) {
-					Debug.DrawLine(Path[i], Path[i+1], Color.red);
+					if(Path.Count >= 2) {
+						Debug.DrawLine(Path[i], Path[i+1], Color.red);
+					}
 				}
 
 				Move();
@@ -164,6 +170,15 @@ public class EnemyController : Pathfinding2D {
 			}
 		}
 
+		// Ignore the enemy layer so that we can raycast from inside the enemy collider. 
+		// Also means enemy can see through other enemies
+		int layer = ~(1 << LayerMask.NameToLayer ("Enemy"));
+		RaycastHit2D visibleCheck = Physics2D.Raycast (transform.position, target.transform.position - transform.position, Mathf.Infinity, layer);
+
+		if (visibleCheck) {
+			targetIsVisible = visibleCheck.collider.transform.root.gameObject == target;
+		}
+
 		if ((target.transform.position - transform.position).magnitude < stats.attackRange) {
 			// Only seek players that are within the vision range of the enemy
 			attack.aimDirection = RotationHelper.RotateTowardsTarget2D (target.transform.position - transform.position);
@@ -183,6 +198,7 @@ public class EnemyController : Pathfinding2D {
 	}
 
 	void FindMoveDirection() {
+		// TODO: REMOVE. NOT USING THIS APPROACH ANY MORE SINCE MOVEMENT IS CURRENTLY PATHFINDING-BASED
 		movement.moveDirection = (target.transform.position - transform.position).normalized;
 	}
 
@@ -193,14 +209,11 @@ public class EnemyController : Pathfinding2D {
 		} else {
 			if (Path.Count > 0)
 			{
-				Debug.Log("Path count > 0");
-				Debug.Log(Path[0]);
 				transform.position = Vector3.MoveTowards(transform.position, Path[0], Time.deltaTime * movement.moveSpeed);
 
 //				transform.Translate((transform.position - Path[0]).normalized * movement.moveSpeed * Time.deltaTime);
 				if (Vector3.Distance(transform.position, Path[0]) < 0.4F)
 				{
-					Debug.Log("Removing path at 0");
 					Path.RemoveAt(0);
 				}
 			}
