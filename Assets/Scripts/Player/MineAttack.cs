@@ -12,7 +12,11 @@ public class MineAttack : MonoBehaviour {
 
 	float nextAttackTime;
 	float attackDelay = 2;
-	
+
+	void Start() {
+		activeMines = new List<GameObject> ();
+	}
+
 	void HandleAttack() {
 		if(mine == null || !mine.activeInHierarchy) {
 			if(Time.time > nextAttackTime) {

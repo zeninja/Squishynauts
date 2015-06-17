@@ -14,8 +14,7 @@ public class ShieldAttack : MonoBehaviour {
 	}
 
 	void HandleAttack(Vector3 direction) {
-		transform.FindChild("Shield").rotation = RotationHelper.RotateTowardsTarget2D(player.moveDirection, transform.localScale.x);//Quaternion.LookRotation(player.moveDirection); //Quaternion.SetFromToRotation(transform.forward, player.moveDirection);
-		
+		transform.FindChild ("Shield").rotation = RotationHelper.LookAt2D (player.moveDirection); 
 		StartCoroutine("Shield", direction);
 	}
 	

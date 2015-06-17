@@ -44,9 +44,9 @@ public class PlayerController : MonoBehaviour {
 		if(!alive) { return; }
 
 		inputHorizontal = Input.GetAxisRaw("P" + playerNum + "_Horizontal");
-		inputVertical = Input.GetAxisRaw("P" + playerNum + "_Vertical");
-		inputFire = Input.GetButtonDown("P" + playerNum + "_Fire");
-		inputFireHold = Input.GetButton("P" + playerNum + "_Fire");
+		inputVertical   = Input.GetAxisRaw("P" + playerNum + "_Vertical");
+		inputFire	    = Input.GetButtonDown("P" + playerNum + "_Fire");
+		inputFireHold   = Input.GetButton("P" + playerNum + "_Fire");
 	
 //		if (inputHorizontal != 0) {
 //			moveDirection.x = inputHorizontal * moveSpeed;
@@ -78,7 +78,8 @@ public class PlayerController : MonoBehaviour {
 			transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
 			
 			if (inputHorizontal != 0) {
-				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * Mathf.Sign(moveDirection.x), transform.localScale.y, transform.localScale.z);
+			//	transform.FindChild("Graphics").localScale = new Vector3(Mathf.Sign(moveDirection.x), 1, 1);
+//				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * Mathf.Sign(moveDirection.x), transform.localScale.y, transform.localScale.z);
 			}
 		}
 	

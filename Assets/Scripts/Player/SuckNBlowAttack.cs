@@ -31,12 +31,12 @@ public class SuckNBlowAttack : MonoBehaviour {
 
 		if (GetComponent<PlayerController> ().inputFire && !carryingSomething) {
 			suckDirection = GetComponent<PlayerController>().moveDirection;
-
+			
 			if (suckDirection == Vector3.zero) {
 				suckDirection = transform.right * Mathf.Sign(transform.localScale.x);
 			}
-
-			transform.FindChild("Attack").transform.rotation = RotationHelper.RotateTowardsTarget2D(transform.position + suckDirection, transform.localScale.x);
+			
+			transform.FindChild ("Attack").transform.rotation = RotationHelper.LookAt2D (suckDirection);
 		}
 
 		if (GetComponent<PlayerController> ().inputFireHold) {

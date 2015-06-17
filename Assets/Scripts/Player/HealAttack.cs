@@ -78,7 +78,7 @@ public class HealAttack : MonoBehaviour {
 //			float angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
 //			medigun.transform.rotation = Quaternion.Euler(0f, 0f, angle * transform.localScale.x);
 
-			medigun.transform.rotation = RotationHelper.RotateTowardsTarget2D(GetComponent<PlayerController>().moveDirection, transform.localScale.x);
+			medigun.transform.rotation = RotationHelper.LookAt2D(GetComponent<PlayerController>().moveDirection);
 
 			float beamLength = beamDistance;
 

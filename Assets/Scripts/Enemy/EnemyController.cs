@@ -173,7 +173,7 @@ public class EnemyController : Pathfinding2D {
 		if (target != null) {
 			if ((target.transform.position - transform.position).magnitude < stats.attackRange) {
 				// Only seek players that are within the vision range of the enemy
-				attack.aimDirection = RotationHelper.RotateTowardsTarget2D (target.transform.position - transform.position);
+				attack.aimDirection = RotationHelper.LookAt2D(target.transform.position);
 				transform.FindChild ("BeamGun").transform.rotation = attack.aimDirection;
 			} else {
 				target = null;
