@@ -25,6 +25,7 @@ public class EnemyController : Pathfinding2D {
 		public int maxHP;
 		public int HP = 3;
 		public int damageOnTouch = 3;
+		public float seekRange = 15;
 		public float attackRange = 10;
 		public bool playerInRange = false;
 		public Vector2 timeToSpendChasing;
@@ -40,7 +41,6 @@ public class EnemyController : Pathfinding2D {
 		public enum MoveState { move, pause }
 		public MoveState moveState = MoveState.pause;
 		public float moveSpeed = 10f;
-		public float seekRange = 10f;
 		[System.NonSerialized]
 		public Vector3 moveDirection;
 	}
@@ -58,7 +58,7 @@ public class EnemyController : Pathfinding2D {
 		public int numShots = 1;
 		public float delayBetweenShots = .1f;
 		public float delayBetweenBursts = 1f;
-		public bool canAttackWhileMoving = false;
+		public bool canAttackWhile = false;
 		[System.NonSerialized]
 		public Quaternion aimDirection;
 
@@ -67,6 +67,7 @@ public class EnemyController : Pathfinding2D {
 	GameObject[] players;
 	GameObject target;
 
+	bool attacking = false;
 
 	public float spread = 0;
 
@@ -79,13 +80,18 @@ public class EnemyController : Pathfinding2D {
 		players = GameObject.FindGameObjectsWithTag("Player");
 
 		FindClosestTarget ();
-//		StartCoroutine("Routine");
+		FindPath (transform.position, target.transform.position);
+		//		StartCoroutine("Routine");
 	}
 
 	void OnDrawGizmos () {
 		if (GameManager.drawGizmos) {
 			UnityEditor.Handles.color = Color.red;
 			UnityEditor.Handles.DrawWireDisc (transform.position, Vector3.forward, stats.attackRange);
+
+			UnityEditor.Handles.color = Color.green;
+			UnityEditor.Handles.DrawWireDisc (transform.position, Vector3.forward, stats.seekRange);
+
 
 			if(Path.Count > 0) {
 				UnityEditor.Handles.color = Color.blue;
@@ -95,69 +101,57 @@ public class EnemyController : Pathfinding2D {
 	}
 
 	#region EnemyState
-	void SwitchState(EnemyState newState) {
-		state = newState;
-
-		StartCoroutine("Routine");
-	}
-
-//	IEnumerator Routine() {
-//		if (alive) {
-//			switch (state) {
-//				case EnemyState.moving:
-//					yield return new WaitForSeconds (Random.Range (stats.timeToSpendChasing.x, stats.timeToSpendChasing.y));
-//					SwitchState (EnemyState.attacking);
-//					break;
-//
-//				case EnemyState.attacking:
-//					HandleAttack ();
-//					yield return new WaitForSeconds (Random.Range (stats.timeToSpendAttacking.x, stats.timeToSpendAttacking.y));
-//					SwitchState (EnemyState.still);
-//					break;
-//
-//				case EnemyState.still:
-//					yield return new WaitForSeconds (Random.Range (stats.timeToSpendPaused.x, stats.timeToSpendPaused.y));
-//					SwitchState (EnemyState.moving);
-//					break;
-//			}
-//		}
-//	}
-
 	void Update() {
 		if(!alive) { return; }
 
 		FindClosestTarget();
-		HandleMovement ();
-//		switch (state) {
-//			case EnemyState.moving:
-//				HandleMovement ();
-//				break;
-//		}
+
+		HandleBehavior ();
+
+		//HandleMovement ();
+	}
+
+	void HandleBehavior() {
+		FindClosestTarget ();
+
+		if (target != null) {
+			if(playerInAttackRange) 
+			{
+				HandleAttack();
+			}
+			else if(playerInSeekRange) 
+			{
+				HandleMovement();
+			}
+		} else {
+			Idle();
+		}
+	}
+
+	void Idle() {
+
 	}
 	#endregion
 	
 	#region Movement
 	void HandleMovement() {
-		if (movement.canMove && state == EnemyState.moving && stats.playerInRange) {
-			if(!usePathfinding) {
-				FindMoveDirection();
-				//Move();
-			} else {
-				for(int i = 0; i < Path.Count - 2; i++) {
-					if(Path.Count >= 2) {
-						Debug.DrawLine(Path[i], Path[i+1], Color.red);
-					}
+		if(!usePathfinding) {
+			FindMoveDirection();
+			//Move();
+		} else {
+			for(int i = 0; i < Path.Count - 2; i++) {
+				if(Path.Count >= 2) {
+					Debug.DrawLine(Path[i], Path[i+1], Color.red);
 				}
-
-				Move();
 			}
+
+			Move();
 		}
 	}
 
 	void FindClosestTarget() {
-
 		float shortestDistanceToTarget = Mathf.Infinity;
-		
+
 		for(int i = 0; i < players.Length; i++) {
 			// Only look for living players
 			if(players[i].GetComponent<PlayerController>().alive) {
@@ -171,11 +165,12 @@ public class EnemyController : Pathfinding2D {
 		}
 
 		if (target != null) {
-			if ((target.transform.position - transform.position).magnitude < stats.attackRange) {
-				// Only seek players that are within the vision range of the enemy
-				attack.aimDirection = RotationHelper.LookAt2D(target.transform.position);
-				transform.FindChild ("BeamGun").transform.rotation = attack.aimDirection;
-			} else {
+			float distanceToTarget = (target.transform.position - transform.position).magnitude;
+
+			playerInAttackRange = distanceToTarget < stats.attackRange;
+			playerInSeekRange   = distanceToTarget < stats.seekRange;
+
+			if (distanceToTarget > stats.seekRange) {
 				target = null;
 			}
 		}
@@ -193,8 +188,16 @@ public class EnemyController : Pathfinding2D {
 			}
 
 			if (usePathfinding && Path.Count == 0) {
-				FindPath(transform.position, target.transform.position);
+				//FindPath(transform.position, target.transform.position);
 			}
+
+			if(Path.Count > 0) {
+				if(Vector3.Distance(target.transform.position, Path[Path.Count - 1]) > 0.4F && usePathfinding) {
+					FindPath(transform.position, target.transform.position);
+				}
+			}
+
+		//	FindPath(transform.position, target.transform.position);
 		}
 	}
 
@@ -212,7 +215,6 @@ public class EnemyController : Pathfinding2D {
 			{
 				transform.position = Vector3.MoveTowards(transform.position, Path[0], Time.deltaTime * movement.moveSpeed);
 
-//				transform.Translate((transform.position - Path[0]).normalized * movement.moveSpeed * Time.deltaTime);
 				if (Vector3.Distance(transform.position, Path[0]) < 0.4F)
 				{
 					Path.RemoveAt(0);
@@ -220,17 +222,21 @@ public class EnemyController : Pathfinding2D {
 			}
 		}
 	}
+
+	void UpdatePath() {
+		FindPath (transform.position, target.transform.position);
+	}
 	#endregion
 
 	#region Attack
 	void HandleAttack() {
-		if (stats.playerInRange) {
+		if (!attacking) {
 			StartCoroutine ("FireShots");
 		}
 	}
 
 	IEnumerator FireShots() {
-
+		attacking = true;
 		for (int i = 0; i < attack.numShots; i++) {
 			Fire();
 

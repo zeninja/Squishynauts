@@ -584,12 +584,12 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 618499579}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fdc7100faf2854352b5dd026d98267dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tilesize: 1
+  Tilesize: .5
   HeuristicAggression: 0
   zStart: -1
   zEnd: 1
@@ -623,9 +623,9 @@ GameObject:
   - 4: {fileID: 768142000}
   - 212: {fileID: 768141999}
   - 114: {fileID: 768142003}
+  - 114: {fileID: 768141998}
   - 50: {fileID: 768142001}
   - 61: {fileID: 768142002}
-  - 114: {fileID: 768141998}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Enemy
@@ -641,38 +641,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 768141997}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf619fcec1705403189a6ab393e0e8b2, type: 3}
+  m_Script: {fileID: 11500000, guid: 31adc840e4718334e8917219d1f3c160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Path: []
   JS: 0
   stateIndex: 0
-  usePathfinding: 0
+  usePathfinding: 1
   playerInAttackRange: 0
   playerInSeekRange: 0
   targetIsVisible: 0
   stats:
     HP: 3
     damageOnTouch: 3
-    attackRange: 10
+    seekRange: 15
+    attackRange: 1
     playerInRange: 0
-    timeToSpendChasing: {x: 0, y: 0}
-    timeToSpendAttacking: {x: 0, y: 0}
-    timeToSpendPaused: {x: 0, y: 0}
+    timeToSpendChasing: {x: 1, y: 3}
+    timeToSpendAttacking: {x: .300000012, y: 1}
+    timeToSpendPaused: {x: .200000003, y: 2}
   movement:
-    canMove: 0
+    canMove: 1
     moveState: 1
-    moveSpeed: 10
-    seekRange: 10
+    moveSpeed: 3
   attack:
-    projectilePrefab: {fileID: 0}
+    projectilePrefab: {fileID: 100000, guid: c0f08c5ef8a80421eb211546e389b8ab, type: 2}
     damageByProjectile: 3
-    damageOnTouch: 2
-    spread: 3
-    numShots: 1
+    damageOnTouch: 3
+    spread: 10
+    numShots: 2
     delayBetweenShots: .100000001
-    delayBetweenBursts: 1
-    canAttackWhileMoving: 0
+    delayBetweenBursts: 0
+    canAttackWhile: 0
   spread: 0
 --- !u!212 &768141999
 SpriteRenderer:
@@ -1056,7 +1056,7 @@ MonoBehaviour:
   stats:
     HP: 3
     damageOnTouch: 3
-    seekRange: 20
+    seekRange: 0
     attackRange: 10
     playerInRange: 0
     timeToSpendChasing: {x: 1, y: 3}
@@ -1074,8 +1074,8 @@ MonoBehaviour:
     numShots: 2
     delayBetweenShots: .100000001
     delayBetweenBursts: 0
-    canAttackWhileMoving: 0
-  spread: 10
+    canAttackWhile: 0
+  spread: 0
 --- !u!212 &948753200
 SpriteRenderer:
   m_ObjectHideFlags: 0
