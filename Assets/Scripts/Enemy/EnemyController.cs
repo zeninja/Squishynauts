@@ -59,7 +59,7 @@ public class EnemyController : Pathfinding2D {
 		public float delayBetweenShots = .1f;
 		public float delayBetweenBursts = 1f;
 		public bool canAttackWhile = false;
-		[System.NonSerialized]
+		//[System.NonSerialized]
 		public Quaternion aimDirection;
 
 	}
@@ -80,7 +80,6 @@ public class EnemyController : Pathfinding2D {
 		players = GameObject.FindGameObjectsWithTag("Player");
 
 		FindClosestTarget ();
-		FindPath (transform.position, target.transform.position);
 		//		StartCoroutine("Routine");
 	}
 
@@ -107,14 +106,14 @@ public class EnemyController : Pathfinding2D {
 		FindClosestTarget();
 
 		HandleBehavior ();
-
-		//HandleMovement ();
 	}
 
 	void HandleBehavior() {
 		FindClosestTarget ();
 
 		if (target != null) {
+			AimTowardsTarget();
+
 			if(playerInAttackRange) 
 			{
 				HandleAttack();
@@ -135,6 +134,10 @@ public class EnemyController : Pathfinding2D {
 	
 	#region Movement
 	void HandleMovement() {
+		// TODO: Make this a more generic call so that it's more flexible
+		StopCoroutine ("FireShots");
+		attacking = false;
+
 		if(!usePathfinding) {
 			FindMoveDirection();
 			//Move();
@@ -144,7 +147,6 @@ public class EnemyController : Pathfinding2D {
 					Debug.DrawLine(Path[i], Path[i+1], Color.red);
 				}
 			}
-
 			Move();
 		}
 	}
@@ -187,17 +189,13 @@ public class EnemyController : Pathfinding2D {
 				targetIsVisible = visibleCheck.collider.transform.root.gameObject == target;
 			}
 
-			if (usePathfinding && Path.Count == 0) {
-				//FindPath(transform.position, target.transform.position);
-			}
-
 			if(Path.Count > 0) {
 				if(Vector3.Distance(target.transform.position, Path[Path.Count - 1]) > 0.4F && usePathfinding) {
 					FindPath(transform.position, target.transform.position);
 				}
+			} else {
+				FindPath(transform.position, target.transform.position);
 			}
-
-		//	FindPath(transform.position, target.transform.position);
 		}
 	}
 
@@ -222,10 +220,6 @@ public class EnemyController : Pathfinding2D {
 			}
 		}
 	}
-
-	void UpdatePath() {
-		FindPath (transform.position, target.transform.position);
-	}
 	#endregion
 
 	#region Attack
@@ -233,6 +227,11 @@ public class EnemyController : Pathfinding2D {
 		if (!attacking) {
 			StartCoroutine ("FireShots");
 		}
+	}
+
+	void AimTowardsTarget() {
+		attack.aimDirection = RotationHelper.LookAt2D (target.transform.position - transform.position);
+		transform.FindChild("BeamGun").rotation = attack.aimDirection;
 	}
 
 	IEnumerator FireShots() {
@@ -245,6 +244,7 @@ public class EnemyController : Pathfinding2D {
 			}
 		}
 		yield return new WaitForSeconds (attack.delayBetweenBursts);
+		StartCoroutine ("FireShots");
 	}
 
 	void Fire() {
@@ -253,17 +253,10 @@ public class EnemyController : Pathfinding2D {
 		projectile.GetComponent<Projectile> ().owner = gameObject;
 		projectile.transform.position = transform.position + attack.aimDirection.eulerAngles * 1.25f;
 
-		// Add a random spread
-		projectile.transform.rotation = Quaternion.Euler(new Vector3(0, 0, attack.aimDirection.eulerAngles.z + Random.Range(-spread/2, spread/2)));
+		// Add a random spread (DOESN'T WORK ATM)
+//		projectile.transform.rotation = Quaternion.Euler( new Vector3(0, 0, attack.aimDirection.eulerAngles.z + Random.Range(-spread/2, spread/2)));
+		projectile.transform.rotation = attack.aimDirection;
 		projectile.GetComponent<Projectile>().damage = attack.damageByProjectile;
-	}
-
-	IEnumerator FireBurst() {
-		for(int i = 0; i < 3; i++) {
-			Fire();
-			yield return new WaitForSeconds(.1f);
-		}
-		yield return new WaitForSeconds(3);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {

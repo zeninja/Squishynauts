@@ -6,7 +6,7 @@ public class SuckNBlowAttack : MonoBehaviour {
 	public float carryModifier = .3f;
 	[System.NonSerialized]
 	public bool carryingSomething;
-	[System.NonSerialized]
+	//[System.NonSerialized]
 	public GameObject carriedObject;
 
 	public float spitSpeed = 10;
@@ -43,15 +43,23 @@ public class SuckNBlowAttack : MonoBehaviour {
 			GetComponent<PlayerController> ().canMove = false;
 
 			if (!carryingSomething) {
-				transform.FindChild("Attack").gameObject.SetActive(true);
+				Suck();
 			}
 
 			canShoot = false;
 		} else {
 			GetComponent<PlayerController> ().canMove = true;
-			transform.FindChild("Attack").gameObject.SetActive(false);
+			//transform.FindChild("Attack").gameObject.SetActive(false);
 
 			canShoot = true;
+		}
+	}
+
+	void Suck() {
+		int numRays = 10;
+
+		for (int i = 0; i < numRays; i++) {
+			//		Physics2D.Raycast ();
 		}
 	}
 

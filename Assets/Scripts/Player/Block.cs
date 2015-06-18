@@ -4,21 +4,15 @@ using System.Collections;
 public class Block : MonoBehaviour {
 
 	public bool destructible = false;
-	
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	
-	void HandleDeath() {
+
+	// THIS FUNCTION COMES FROM THE EXPLOSION SCRIPT.
+	// OTHER GAMEOBJECTS ALSO SEND THE SAME MESSAGE (SWORD, EVERYTHING?)
+	// THIS SHOULD MAYBE BE CHANGED??
+	void HandleDamage(int dmg) {
 		if (destructible) {
 			Destroy(gameObject);
+			Pathfinder2D.Instance.Create2DMap();
 		}
 	}
 }

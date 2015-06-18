@@ -97,7 +97,7 @@ public class Pathfinder2D : MonoBehaviour
     #region map
     //-------------------------------------------------INSTANIATE MAP-----------------------------------------------//
 
-    private void Create2DMap()
+    public void Create2DMap()
     {
         //Find positions for start and end of map
         int startX = (int)MapStartPosition.x;
@@ -311,6 +311,8 @@ public class Pathfinder2D : MonoBehaviour
     {
         int x = (MapStartPosition.x < 0F) ? Mathf.FloorToInt(((pos.x + Mathf.Abs(MapStartPosition.x)) / Tilesize)) : Mathf.FloorToInt((pos.x - MapStartPosition.x) / Tilesize);
         int y = (MapStartPosition.y < 0F) ? Mathf.FloorToInt(((pos.y + Mathf.Abs(MapStartPosition.y)) / Tilesize)) : Mathf.FloorToInt((pos.y - MapStartPosition.y) / Tilesize);
+
+
 
         Node n = Map[x, y];
 
