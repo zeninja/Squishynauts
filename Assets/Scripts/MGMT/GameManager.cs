@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour {
 
 	GameObject[] players;
 
+	public GameObject[] squishyAbilities;
+
 	void Awake() {
 
 	}
@@ -53,7 +55,5 @@ public class GameManager : MonoBehaviour {
 		if (numPlayersDead == players.Length) {
 			gameOver = true;
 		}
-
-
 	}
 }

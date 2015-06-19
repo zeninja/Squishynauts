@@ -68,16 +68,6 @@ public class HealAttack : MonoBehaviour {
 			RaycastHit2D hit = Physics2D.Raycast(transform.position, aimDirection, beamDistance, layer);
 
 			medigun.gameObject.SetActive(true);
-			//medigun.transform.rotation.SetFromToRotation(transform.position, transform.position + GetComponent<PlayerController>().moveDirection); //(transform.position + GetComponent<PlayerController>().moveDirection * 10);
-			//medigun.transform.LookAt(transform.position + GetComponent<PlayerController>().moveDirection);
-
-
-//			float x = GetComponent<PlayerController>().moveDirection.x;
-//			float y = GetComponent<PlayerController>().moveDirection.y;
-//
-//			float angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
-//			medigun.transform.rotation = Quaternion.Euler(0f, 0f, angle * transform.localScale.x);
-
 			medigun.transform.rotation = RotationHelper.LookAt2D(GetComponent<PlayerController>().moveDirection);
 
 			float beamLength = beamDistance;
@@ -86,7 +76,7 @@ public class HealAttack : MonoBehaviour {
 				if(hit.collider != null && hit.collider != GetComponent<Collider>()) {
 					Debug.Log(hit.collider.name);
 
-					hit.collider.SendMessage("HandleMedicBeam", SendMessageOptions.DontRequireReceiver);
+					hit.collider.SendMessage("HandleDamage", 1, SendMessageOptions.DontRequireReceiver);
 					beamLength = hit.point.x - transform.position.x;
 				}
 			}

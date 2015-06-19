@@ -17,7 +17,7 @@ public class SuckNBlowAttack : MonoBehaviour {
 	public bool canShoot = false;
 
 	bool blowing = false;
-
+	
 	// Update is called once per frame
 	void Update () {
 		if (carryingSomething) {
@@ -39,8 +39,8 @@ public class SuckNBlowAttack : MonoBehaviour {
 			transform.FindChild ("Attack").transform.rotation = RotationHelper.LookAt2D (suckDirection);
 		}
 
-		if (GetComponent<PlayerController> ().inputFireHold) {
-			GetComponent<PlayerController> ().canMove = false;
+		if (GetComponent<PlayerController>().inputFireHold) {
+			GetComponent<PlayerController>().canMove = false;
 
 			if (!carryingSomething) {
 				Suck();
@@ -55,11 +55,15 @@ public class SuckNBlowAttack : MonoBehaviour {
 		}
 	}
 
+	public int numRays = 10;
+
 	void Suck() {
-		int numRays = 10;
+		Vector2 raycastOrigin;
 
 		for (int i = 0; i < numRays; i++) {
-			//		Physics2D.Raycast ();
+			raycastOrigin = (Vector2)transform.position + new Vector2(0, (float)(i - numRays/2)/numRays);
+			Physics2D.Raycast(raycastOrigin, transform.right, 4);
+			Debug.DrawRay(raycastOrigin, transform.right);
 		}
 	}
 

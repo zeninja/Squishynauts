@@ -103,9 +103,21 @@ public class EnemyController : Pathfinding2D {
 	void Update() {
 		if(!alive) { return; }
 
+		CheckCollisions ();
+
 		FindClosestTarget();
 
 		HandleBehavior ();
+	}
+
+	void CheckCollisions() {
+		int numRays = 10;
+
+
+
+		for(int i = 0; i < numRays; i++) {
+//			Physics2D.Raycast(
+		}
 	}
 
 	void HandleBehavior() {

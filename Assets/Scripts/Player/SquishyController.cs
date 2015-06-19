@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
+public class SquishyController : MonoBehaviour {
 
 	public bool invincible = true;
 	public int playerNum;
 	
 	public int hp = 10;
 	int maxHealth = 10;
-	int healRate = 1;
 
 	public float moveSpeed;
 	[System.NonSerialized]
@@ -18,7 +17,7 @@ public class PlayerController : MonoBehaviour {
 	float inputVertical;
 	[System.NonSerialized]
 	public bool inputFire;
-	[System.NonSerialized]
+	//[System.NonSerialized]
 	public bool inputFireHold;
 
 	public bool canMove = true;
@@ -30,7 +29,16 @@ public class PlayerController : MonoBehaviour {
 	[System.NonSerialized]
 	public bool alive = true;
 
-	public MonoBehaviour ability;
+	public GameObject abilityPrefab;
+	GameObject myAbility;
+
+	void Awake() {
+		// TODO: COULD PROBABLY CHANGE THIS TO SOME KIND OF HASHTABLE (?) THAT JUST CONTAINS THE SCRIPT TO BE ATTACHED AND THE SPRITE??
+		myAbility = Instantiate (abilityPrefab) as GameObject;
+		myAbility.transform.parent = transform;
+		myAbility.transform.position = transform.position;
+//		myAbility.SetActive (false);
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -108,18 +116,17 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void HandleDamage(int dmg) {
+		//Handle damage
 		hp = Mathf.Max (0, hp - dmg);
+
+		//Handle healing
+		hp = Mathf.Min (hp, maxHealth);
+
 		if (hp == 0) {
 			HandleDeath();
 		}
 	}
 
-	void HandleMedicBeam() {
-		Debug.Log(gameObject.name + " being healed");
-		hp += healRate;
-		hp = Mathf.Min(hp, maxHealth);
-	}
-	
 	void HandleDeath() {
 		if(!invincible) {
 			alive = false;

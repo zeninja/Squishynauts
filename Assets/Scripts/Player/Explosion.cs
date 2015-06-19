@@ -12,6 +12,7 @@ public class Explosion : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter2D(Collider2D other) {
+		other.SendMessage ("HandleExplosion", SendMessageOptions.DontRequireReceiver);
 		other.SendMessage("HandleDamage", damage, SendMessageOptions.DontRequireReceiver);
 	}
 	
