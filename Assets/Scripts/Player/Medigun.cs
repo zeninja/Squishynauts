@@ -43,8 +43,6 @@ public class Medigun : MonoBehaviour {
 			healTarget = null;
 
 			for(int i = 0; i < beamTargets.Length; i++) {
-				Debug.Log(beamTargets[i].collider.gameObject.name);
-
 				if (beamTargets[i].distance < distanceToTarget && beamTargets[i].collider.gameObject != transform.parent.gameObject) {
 					distanceToTarget = beamTargets[i].distance;
 					healTarget = beamTargets[i].transform.root.gameObject;

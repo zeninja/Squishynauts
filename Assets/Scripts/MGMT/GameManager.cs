@@ -9,9 +9,7 @@ public class GameManager : MonoBehaviour {
 	public static bool drawGizmos = true;
 
 	GameObject[] players;
-
-	public GameObject[] squishyAbilities;
-
+	
 	void Awake() {
 
 	}

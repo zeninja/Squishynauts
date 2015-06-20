@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SuckNBlowAttack : MonoBehaviour {
+
+	SquishyController squishyController;
+	GameObject graphics;
 
 	public float carryModifier = .3f;
 	[System.NonSerialized]
@@ -17,30 +21,34 @@ public class SuckNBlowAttack : MonoBehaviour {
 	public bool canShoot = false;
 
 	bool blowing = false;
-	
+
+	void Start() {
+		squishyController = transform.parent.GetComponent<SquishyController> ();
+		graphics = transform.FindChild ("Graphics").gameObject;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (carryingSomething) {
-
 			carriedObject.transform.position = transform.position;
 			
-			if (GetComponent<PlayerController>().inputFire && canShoot) {
+			if (squishyController.inputFire && canShoot) {
 				Blow ();
 			}
 		}
 
-		if (GetComponent<PlayerController> ().inputFire && !carryingSomething) {
-			suckDirection = GetComponent<PlayerController>().moveDirection;
+		if (squishyController.inputFire && !carryingSomething) {
+			suckDirection = squishyController.moveDirection;
 			
 			if (suckDirection == Vector3.zero) {
 				suckDirection = transform.right * Mathf.Sign(transform.localScale.x);
 			}
 			
-			transform.FindChild ("Attack").transform.rotation = RotationHelper.LookAt2D (suckDirection);
+			transform.rotation = RotationHelper.LookAt2D (suckDirection);
 		}
 
-		if (GetComponent<PlayerController>().inputFireHold) {
-			GetComponent<PlayerController>().canMove = false;
+		if (squishyController.inputFireHold) {
+			squishyController.canMove = false;
 
 			if (!carryingSomething) {
 				Suck();
@@ -48,33 +56,43 @@ public class SuckNBlowAttack : MonoBehaviour {
 
 			canShoot = false;
 		} else {
-			GetComponent<PlayerController> ().canMove = true;
-			//transform.FindChild("Attack").gameObject.SetActive(false);
-
+			squishyController.canMove = true;
+			graphics.SetActive(false);
 			canShoot = true;
 		}
 	}
 
-	public int numRays = 10;
+	GameObject target;
 
 	void Suck() {
-		Vector2 raycastOrigin;
+		if (!blowing) {
+			graphics.SetActive (true);
+			List<RaycastHit2D> hits = graphics.GetComponent<RaycastCollision> ().hitTargets;
 
-		for (int i = 0; i < numRays; i++) {
-			raycastOrigin = (Vector2)transform.position + new Vector2(0, (float)(i - numRays/2)/numRays);
-			Physics2D.Raycast(raycastOrigin, transform.right, 4);
-			Debug.DrawRay(raycastOrigin, transform.right);
+			float distanceToTarget = Mathf.Infinity;
+
+			for (int i = 0; i < hits.Count; i++) {
+				if (hits [i].distance < distanceToTarget && hits [i].collider != GetComponent<Collider2D> ()) {
+					distanceToTarget = hits [i].distance;
+					target = hits [i].collider.transform.root.gameObject;
+				}
+			}
+
+			if (target != null) {
+				Carry (target);
+			}
 		}
 	}
 
-	void Carry(GameObject target) {
+	public void Carry(GameObject target) {
 		if (!carryingSomething) {
 			carryingSomething = true;
 			carriedObject = target;
 			carriedObject.SetActive (false);
-			transform.FindChild("Attack").gameObject.SetActive(false);
+			graphics.SetActive(false);
+			target = null;
 		}
-		GetComponent<PlayerController> ().moveSpeed *= carryModifier;
+		squishyController.moveSpeed *= carryModifier;
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -86,13 +104,12 @@ public class SuckNBlowAttack : MonoBehaviour {
 	void Blow() {
 		carryingSomething = false;
 		carriedObject.SetActive (true);
-		GetComponent<PlayerController> ().moveSpeed = GetComponent<PlayerController> ().defaultMoveSpeed;
+		squishyController.moveSpeed = squishyController.defaultMoveSpeed;
 
-		spitDirection = GetComponent<PlayerController> ().moveDirection;
+		spitDirection = squishyController.moveDirection;
 		if (spitDirection == Vector3.zero) {
 			spitDirection = transform.right * Mathf.Sign(transform.localScale.x);
 		}
-
 
 		StartCoroutine ("BlowOutObject");
 	}

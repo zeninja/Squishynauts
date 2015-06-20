@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 487466}
   - 212: {fileID: 21284322}
   - 61: {fileID: 6176272}
+  - 114: {fileID: 11445140}
   m_Layer: 0
   m_Name: Graphics
   m_TagString: Untagged
@@ -25,6 +26,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 466386}
+  - 114: {fileID: 11450248}
   m_Layer: 0
   m_Name: SuckNBlow
   m_TagString: Untagged
@@ -70,6 +72,35 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1.21000004, y: .860000014}
+--- !u!114 &11445140
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 131146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860267459001b49408e10fc65db0d827, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numRays: 10
+--- !u!114 &11450248
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 145230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fda7b2c80b6f421b8d17e6b6b9a455b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carryModifier: .300000012
+  carriedObject: {fileID: 0}
+  spitSpeed: 10
+  numSpitFrames: 60
+  canShoot: 0
+  numRays: 10
 --- !u!212 &21284322
 SpriteRenderer:
   m_ObjectHideFlags: 1
