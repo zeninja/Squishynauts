@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class SuckNBlowAttack : MonoBehaviour {
 
+	enum AttackState {neutral, sucking, carrying, blowing}
+	AttackState state = AttackState.neutral;
+
 	SquishyController squishyController;
 	GameObject graphics;
 
@@ -19,8 +22,9 @@ public class SuckNBlowAttack : MonoBehaviour {
 	Vector3 suckDirection;
 	Vector3 spitDirection;
 	public bool canShoot = false;
-
-	bool blowing = false;
+	
+	bool inputFire;
+	bool inputFireHold;
 
 	void Start() {
 		squishyController = transform.parent.GetComponent<SquishyController> ();
@@ -29,76 +33,123 @@ public class SuckNBlowAttack : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (carryingSomething) {
-			carriedObject.transform.position = transform.position;
-			
-			if (squishyController.inputFire && canShoot) {
-				Blow ();
-			}
-		}
+		ManageInput ();
+//
+//		if (carryingSomething) {
+//			carriedObject.transform.position = transform.position;
+//			
+//			if (squishyController.inputFire && canShoot) {
+//				Blow ();
+//			}
+//		}
+//
+//		if (squishyController.inputFire && !carryingSomething) {
+//			suckDirection = squishyController.moveDirection;
+//			
+//			if (suckDirection == Vector3.zero) {
+//				suckDirection = transform.right * Mathf.Sign(transform.localScale.x);
+//			}
+//			
+//			transform.rotation = RotationHelper.LookAt2D (suckDirection);
+//		}
+//
+//		if (squishyController.inputFireHold) {
+//			squishyController.canMove = false;
+//
+//			if (!carryingSomething) {
+//				Suck();
+//			}
+//
+//			canShoot = false;
+//		} else {
+//			squishyController.canMove = true;
+//			graphics.SetActive(false);
+//			canShoot = true;
+//		}
+	}
 
-		if (squishyController.inputFire && !carryingSomething) {
-			suckDirection = squishyController.moveDirection;
-			
-			if (suckDirection == Vector3.zero) {
-				suckDirection = transform.right * Mathf.Sign(transform.localScale.x);
-			}
-			
-			transform.rotation = RotationHelper.LookAt2D (suckDirection);
-		}
+	void ManageInput() {
+		inputFire	  = squishyController.inputFire;
+		inputFireHold = squishyController.inputFireHold;
 
-		if (squishyController.inputFireHold) {
-			squishyController.canMove = false;
-
-			if (!carryingSomething) {
-				Suck();
-			}
-
-			canShoot = false;
-		} else {
-			squishyController.canMove = true;
-			graphics.SetActive(false);
-			canShoot = true;
+		switch (state) {
+			case AttackState.neutral:
+				ManageNeutralInput();
+				break;
+			case AttackState.sucking:
+				ManageSuckingInput();
+				break;
+			case AttackState.carrying:
+				ManageCarryingInput();
+				break;
+			case AttackState.blowing:
+				ManageBlowingInput();
+				break;
 		}
 	}
 
-	GameObject target;
+	void SetState(AttackState newState) {
+		state = newState;
+	}
+
+	void ManageNeutralInput() {
+		graphics.SetActive (false);
+		squishyController.canMove = true;
+
+		if (inputFire) {
+			suckDirection = squishyController.moveDirection;
+			SetState(AttackState.sucking);
+		}
+	}
+
+	void ManageSuckingInput() {
+		if (inputFireHold) {
+			Suck ();
+		} else {
+			SetState(AttackState.neutral);
+		}
+	}
+
+	void ManageCarryingInput() {
+		if (inputFire) {
+			SetState(AttackState.blowing);
+			Blow();
+		}
+	}
+
+	void ManageBlowingInput() {
+		// Not being used at the moment, but may be useful if we decide to add more layers to the blowing
+	}
 
 	void Suck() {
-		if (!blowing) {
-			graphics.SetActive (true);
-			List<RaycastHit2D> hits = graphics.GetComponent<RaycastCollision> ().hitTargets;
+		graphics.SetActive (true);
+		squishyController.canMove = false;
+		transform.rotation = RotationHelper.LookAt2D (suckDirection);
 
-			float distanceToTarget = Mathf.Infinity;
+		List<RaycastHit2D> hits = graphics.GetComponent<RaycastCollision> ().hitTargets;
 
-			for (int i = 0; i < hits.Count; i++) {
-				if (hits [i].distance < distanceToTarget && hits [i].collider != GetComponent<Collider2D> ()) {
-					distanceToTarget = hits [i].distance;
-					target = hits [i].collider.transform.root.gameObject;
-				}
+		float distanceToTarget = Mathf.Infinity;
+		GameObject target = null;
+
+		for (int i = 0; i < hits.Count; i++) {
+			if (hits [i].distance < distanceToTarget && hits [i].collider != GetComponent<Collider2D> ()) {
+				distanceToTarget = hits [i].distance;
+				target = hits [i].collider.transform.root.gameObject;
 			}
+		}
 
-			if (target != null) {
-				Carry (target);
-			}
+		if (target != null) {
+			SetState(AttackState.carrying);
+			Carry (target);
 		}
 	}
 
 	public void Carry(GameObject target) {
-		if (!carryingSomething) {
-			carryingSomething = true;
-			carriedObject = target;
-			carriedObject.SetActive (false);
-			graphics.SetActive(false);
-			target = null;
-		}
+		squishyController.canMove = true;
 		squishyController.moveSpeed *= carryModifier;
-	}
-
-	void OnTriggerEnter2D(Collider2D other) {
-		if (!carryingSomething && !blowing) {
-			Carry(other.transform.root.gameObject);
-		}
+		carriedObject = target;
+		carriedObject.SetActive (false);
+		graphics.SetActive(false);
 	}
 
 	void Blow() {
@@ -114,21 +165,26 @@ public class SuckNBlowAttack : MonoBehaviour {
 		StartCoroutine ("BlowOutObject");
 	}
 
+	//TODO: THIS SEEMS REALLY FRAGILE SINCE IT MIGHT GET FUCKED UP IF SOMEONE KILLS LIPS WHILE THE SPIT THING IS GETTING SPIT
+	// SHOULD TRY TO FIGURE OUT AN ALTERNATIVE APPROACH (PROBABLY JUST CHANGE THE DIRECTION OF THE MOTOR FOR A CERTAIN AMOUNT OF TIME)
 	IEnumerator BlowOutObject() {
-		GameObject spitObject = carriedObject;
-		carriedObject = null;
-
-		blowing = true;
+//		GameObject spitObject = carriedObject;
+		carriedObject.SetActive (true);
 
 		for (int i = 0; i < numSpitFrames; i++) {
-			if (spitObject != null) {
-				spitObject.transform.position = Vector3.MoveTowards(spitObject.transform.position, spitObject.transform.position + spitDirection * spitSpeed, Time.deltaTime * spitSpeed);
+			if (carriedObject != null) {
+				carriedObject.transform.position = Vector3.MoveTowards(carriedObject.transform.position, carriedObject.transform.position + spitDirection * spitSpeed, Time.deltaTime * spitSpeed);
 			}
+
+//			if (spitObject != null) {
+//				spitObject.transform.position = Vector3.MoveTowards(spitObject.transform.position, spitObject.transform.position + spitDirection * spitSpeed, Time.deltaTime * spitSpeed);
+//			}
 
 			yield return new WaitForEndOfFrame();
 		}
+		carriedObject = null;
 
-		blowing = false;
+		SetState (AttackState.neutral);
 	}
 
 }
